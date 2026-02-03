@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>For You ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 50%, #ffa8c5 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+      color: #333;
+      text-align: center;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 50px 40px;
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      max-width: 500px;
+      animation: slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 20px 60px rgba(255, 107, 157, 0.3), 
+                  0 0 1px rgba(255, 255, 255, 0.8) inset;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #ff6b9d, #ff4757);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    p {
+      font-size: 1.05rem;
+      margin-bottom: 35px;
+      line-height: 1.8;
+      color: #666;
+      font-weight: 300;
+      letter-spacing: 0.3px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .yes {
+      background: linear-gradient(135deg, #ff6b9d, #ff4757);
+      color: white;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .yes:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+    }
+
+    .yes:active {
+      transform: translateY(0);
+    }
+
+    .no {
+      background: rgba(255, 107, 157, 0.1);
+      color: #ff6b9d;
+      border: 2px solid rgba(255, 107, 157, 0.3);
+      position: relative;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .no:hover {
+      background: rgba(255, 107, 157, 0.15);
+      border-color: rgba(255, 107, 157, 0.5);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hearts span {
+      position: fixed;
+      font-size: 24px;
+      animation: float 6s infinite ease-in;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      5% {
+        opacity: 1;
+      }
+      95% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(var(--drift)) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(var(--sway-amount)); }
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 40px 25px;
+        max-width: 90%;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      button {
+        padding: 12px 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1 id="title"></h1>
+  <p id="message"></p>
+
+  <div class="button-group">
+    <button class="yes" onclick="accepted()">Yes 💖</button>
+    <button class="no" onmouseover="moveNo(this)">No 🙈</button>
+  </div>
+</div>
+
+<div class="hearts" id="hearts"></div>
+
+<script>
+  // Base64 encoded message
+  const encodedTitle = "V2lsbCBZb3UgQmUgTXkgVmFsZW50aW5lPyDwn5qI";
+  const encodedMessage = "RnJvbSB0aGUgbW9tZW50IEkgbWV0IHlvdSwgeW91J3ZlIG1hZGUgbXkgd29ybGQgYSBiZXR0ZXIgcGxhY2UuIFdpbGwgWW91IEJlIE15IFZhbGVudGluZT8g8J+Sqw==";
+
+  document.getElementById("title").innerText = atob(encodedTitle);
+  document.getElementById("message").innerText = atob(encodedMessage);
+
+  function accepted() {
+    const card = document.querySelector(".card");
+    card.style.animation = "none";
+    setTimeout(() => {
+      card.innerHTML = "<h1 style='font-size: 3rem; margin-bottom: 20px;'>YAYYYY 💕</h1><p style='color: #ff6b9d; font-size: 1.15rem;'>You just made me the happiest person alive 😍</p>";
+      card.style.animation = "slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)";
+    }, 10);
+  }
+
+  function moveNo(btn) {
+    const maxX = window.innerWidth - btn.offsetWidth - 20;
+    const maxY = window.innerHeight - btn.offsetHeight - 20;
+    const randomX = Math.random() * maxX;
+    const randomY = Math.random() * maxY;
+    
+    btn.style.position = "fixed";
+    btn.style.left = randomX + "px";
+    btn.style.top = randomY + "px";
+  }
+
+  // Floating hearts
+  for (let i = 0; i < 25; i++) {
+    const heart = document.createElement("span");
+    heart.innerHTML = "❤️";
+    
+    // Randomize drift for natural sideways movement
+    const drift = (Math.random() - 0.5) * 200;
+    const duration = Math.random() * 4 + 8; // 8-12 seconds for slower, more natural float
+    const delay = i * 0.15; // Stagger start times
+    
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.setProperty("--drift", drift + "px");
+    heart.style.setProperty("--sway-amount", (Math.random() - 0.5) * 60 + "px");
+    heart.style.animationDuration = duration + "s";
+    heart.style.animationDelay = delay + "s";
+    heart.style.opacity = Math.random() * 0.3 + 0.5; // Variable opacity
+    
+    document.getElementById("hearts").appendChild(heart);
+  }
+</script>
+
+</body>
+</html>
